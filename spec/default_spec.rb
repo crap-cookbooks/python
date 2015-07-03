@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'python::default' do
   let :chef_run do
-    ChefSpec::Runner.new(platform: 'ubuntu', version: '12.04').converge described_recipe
+    ChefSpec::SoloRunner.new(platform: 'ubuntu', version: '12.04').converge described_recipe
   end
 
   before do
