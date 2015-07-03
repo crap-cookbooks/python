@@ -2,6 +2,11 @@ python Cookbook CHANGELOG
 =========================
 This file is used to list changes made in each version of the python cookbook.
 
+v2.0.0
+------
+
+in progress
+
 v1.4.6
 ------
 
