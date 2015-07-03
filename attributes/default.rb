@@ -1,4 +1,3 @@
-#
 # Author:: Seth Chisamore (<schisamo@chef.io>)
 # Cookbook Name:: python
 # Attribute:: default
