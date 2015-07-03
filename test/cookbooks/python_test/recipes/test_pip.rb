@@ -19,33 +19,33 @@
 # limitations under the License.
 #
 
-file "/tmp/first-install.txt" do
-  content "test"
+file '/tmp/first-install.txt' do
+  content 'test'
   action :nothing
 end
 
-file "/tmp/second-install.txt" do
-  content "test"
+file '/tmp/second-install.txt' do
+  content 'test'
   action :nothing
 end
 
-python_virtualenv "/tmp/virtualenv" do
-  owner "root"
-  group "root"
+python_virtualenv '/tmp/virtualenv' do
+  owner 'root'
+  group 'root'
   action :create
 end
 
-python_pip "should_dsl first install" do
-  package_name "should_dsl"
-  virtualenv "/tmp/virtualenv"
-  version "2.1.2"
-  notifies :create, "file[/tmp/first-install.txt]"
+python_pip 'should_dsl first install' do
+  package_name 'should_dsl'
+  virtualenv '/tmp/virtualenv'
+  version '2.1.2'
+  notifies :create, 'file[/tmp/first-install.txt]'
 end
 
-python_pip "should_dsl second install" do
-  package_name "should_dsl"
-  virtualenv "/tmp/virtualenv"
+python_pip 'should_dsl second install' do
+  package_name 'should_dsl'
+  virtualenv '/tmp/virtualenv'
   # same version as before
-  version "2.1.2"
-  notifies :create, "file[/tmp/second-install.txt]"
+  version '2.1.2'
+  notifies :create, 'file[/tmp/second-install.txt]'
 end

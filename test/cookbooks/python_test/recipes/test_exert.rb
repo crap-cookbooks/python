@@ -19,17 +19,17 @@
 #
 
 python_virtualenv "#{Chef::Config[:file_cache_path]}/virtualenv" do
-  interpreter "python"
-  owner "root"
-  group "root"
+  interpreter 'python'
+  owner 'root'
+  group 'root'
   action :create
 end
 
-python_pip "boto" do
+python_pip 'boto' do
   action :install
   virtualenv "#{Chef::Config[:file_cache_path]}/virtualenv"
 end
 
-python_pip "psutil" do
+python_pip 'psutil' do
   action :install
 end

@@ -18,9 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe "python::pip"
+include_recipe 'python::pip'
 
-python_pip "virtualenv" do
+python_pip 'virtualenv' do
   action :upgrade
   version node['python']['virtualenv_version']
 end

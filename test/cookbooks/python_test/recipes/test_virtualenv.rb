@@ -18,18 +18,18 @@
 # limitations under the License.
 #
 
-python_virtualenv "/tmp/virtualenv" do
-  owner "root"
-  group "root"
+python_virtualenv '/tmp/virtualenv' do
+  owner 'root'
+  group 'root'
   action :create
 end
 
-python_virtualenv "isolated python environment" do
-  path "/tmp/tobedestroyed"
+python_virtualenv 'isolated python environment' do
+  path '/tmp/tobedestroyed'
   action :create
 end
 
-python_virtualenv "deleting the isolated python environment" do
-  path "/tmp/tobedestroyed"
+python_virtualenv 'deleting the isolated python environment' do
+  path '/tmp/tobedestroyed'
   action :delete
 end

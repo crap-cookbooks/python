@@ -25,26 +25,26 @@
 
 if node['python']['install_method'] == 'source'
   pip_binary = "#{node['python']['prefix_dir']}/bin/pip"
-elsif platform_family?("rhel", "fedora")
-  pip_binary = "/usr/bin/pip"
-elsif platform_family?("smartos")
-  pip_binary = "/opt/local/bin/pip"
+elsif platform_family?('rhel', 'fedora')
+  pip_binary = '/usr/bin/pip'
+elsif platform_family?('smartos')
+  pip_binary = '/opt/local/bin/pip'
 else
-  pip_binary = "/usr/local/bin/pip"
+  pip_binary = '/usr/local/bin/pip'
 end
 
 cookbook_file "#{Chef::Config[:file_cache_path]}/get-pip.py" do
   source 'get-pip.py'
-  mode "0644"
-  not_if { ::File.exists?(pip_binary) }
+  mode '0644'
+  not_if { ::File.exist?(pip_binary) }
 end
 
-execute "install-pip" do
+execute 'install-pip' do
   cwd Chef::Config[:file_cache_path]
   command <<-EOF
   #{node['python']['binary']} get-pip.py
   EOF
-  not_if { ::File.exists?(pip_binary) }
+  not_if { ::File.exist?(pip_binary) }
 end
 
 python_pip 'setuptools' do

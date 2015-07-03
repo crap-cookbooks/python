@@ -32,10 +32,10 @@ end
 
 action :install do
   # If we specified a version, and it's not the current version, move to the specified version
-  if new_resource.version != nil && new_resource.version != current_resource.version
+  if !new_resource.version.nil? && new_resource.version != current_resource.version
     install_version = new_resource.version
   # If it's not installed at all, install it
-  elsif current_resource.version == nil
+  elsif current_resource.version.nil?
     install_version = candidate_version
   end
 
@@ -44,23 +44,19 @@ action :install do
     converge_by(description) do
       Chef::Log.info("Installing #{new_resource} version #{install_version}")
       status = install_package(install_version)
-      if status
-        new_resource.updated_by_last_action(true)
-      end
+      new_resource.updated_by_last_action(true) if status
     end
   end
 end
 
 action :upgrade do
   if current_resource.version != candidate_version
-    orig_version = current_resource.version || "uninstalled"
+    orig_version = current_resource.version || 'uninstalled'
     description = "upgrade #{current_resource} version from #{current_resource.version} to #{candidate_version}"
     converge_by(description) do
       Chef::Log.info("Upgrading #{new_resource} version from #{orig_version} to #{candidate_version}")
       status = upgrade_package(candidate_version)
-      if status
-        new_resource.updated_by_last_action(true)
-      end
+      new_resource.updated_by_last_action(true) if status
     end
   end
 end
@@ -121,14 +117,14 @@ def candidate_version
     # `pip search` doesn't return versions yet
     # `pip list` may be coming soon:
     # https://bitbucket.org/ianb/pip/issue/197/option-to-show-what-version-would-be
-    new_resource.version||'latest'
+    new_resource.version || 'latest'
   end
 end
 
 def install_package(version)
   # if a version isn't specified (latest), is a source archive (ex. http://my.package.repo/SomePackage-1.0.4.zip),
   # or from a VCS (ex. git+https://git.repo/some_pkg.git) then do not append a version as this will break the source link
-  if version == 'latest' || new_resource.package_name.downcase.start_with?('http:', 'https:') || ['git', 'hg', 'svn'].include?(new_resource.package_name.downcase.split('+')[0])
+  if version == 'latest' || new_resource.package_name.downcase.start_with?('http:', 'https:') || %w(git hg svn).include?(new_resource.package_name.downcase.split('+')[0])
     version = ''
   else
     version = "==#{version}"
@@ -141,26 +137,26 @@ def upgrade_package(version)
   install_package(version)
 end
 
-def remove_package(version)
+def remove_package(_version)
   new_resource.options "#{new_resource.options} --yes"
   pip_cmd('uninstall')
 end
 
-def pip_cmd(subcommand, version='')
-  options = { :timeout => new_resource.timeout, :user => new_resource.user, :group => new_resource.group }
-  environment = Hash.new
+def pip_cmd(subcommand, version = '')
+  options = { timeout: new_resource.timeout, user: new_resource.user, group: new_resource.group }
+  environment = {}
   environment['HOME'] = Dir.home(new_resource.user) if new_resource.user
   environment.merge!(new_resource.environment) if new_resource.environment && !new_resource.environment.empty?
   options[:environment] = environment
   shell_out!("#{which_pip(new_resource)} #{subcommand} #{new_resource.options} #{new_resource.package_name}#{version}", options)
 end
 
-# TODO remove when provider is moved into Chef core
+# TODO: remove when provider is moved into Chef core
 # this allows PythonPip to work with Chef::Resource::Package
 def which_pip(nr)
-  if (nr.respond_to?("virtualenv") && nr.virtualenv)
-    ::File.join(nr.virtualenv,'/bin/pip')
-  elsif ::File.exists?(node['python']['pip_location'])
+  if nr.respond_to?('virtualenv') && nr.virtualenv
+    ::File.join(nr.virtualenv, '/bin/pip')
+  elsif ::File.exist?(node['python']['pip_location'])
     node['python']['pip_location']
   else
     'pip'
